@@ -1,7 +1,7 @@
 #include <concepts>
 
 // WIP implement all concepts as class https://en.cppreference.com/w/cpp/concepts
-namespace reconcept
+namespace rccpt
 {
     template<class Type>
     struct same_as
