@@ -93,4 +93,24 @@ namespace rccpt
         template<class Func>
         static constexpr bool value = std::predicate<Func,Args...>; 
     };
+
+    struct integral
+    {
+        template<class T>
+        static constexpr bool value = std::integral<T>;
+    };
+}
+
+#include <ranges>
+
+namespace rccpt
+{
+    // range_of<double>, range_of<filesystem::path>,range_of<filesystem::path>, range_of<convertible_to<filesystemm::path>>
+    // range_of<filesystemm::path,convertible_to>
+    // template<class R, class Constraint , template<class...>class Selector = std::ranges::range_value_t>
+    // concept range_of = std::ranges::range<R> && (std::same_as<Constraint,Selector<R>> || Constraint::template value<Selector<R>>);
+
+    template<class Range, class Type_or_Constraint , template<class...>class Element = std::ranges::range_value_t>
+    concept range_of = std::ranges::range<Range> && 
+        (std::same_as<Type_or_Constraint,Element<Range>> || Type_or_Constraint::template value<Element<Range>>);
 }
