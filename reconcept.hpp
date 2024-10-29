@@ -38,10 +38,10 @@ namespace rccpt
         static constexpr bool value = std::common_with<T,U>; 
     };
 
-    template<class LHS>
+    template<class RHS>
     struct assignable_from
     {
-        template<class RHS>
+        template<class LHS>
         static constexpr bool value = std::assignable_from<LHS,RHS>; 
     };
 
@@ -59,10 +59,10 @@ namespace rccpt
         static constexpr bool value = std::constructible_from<T,From...>; 
     };
 
-    template<class T>
+    template<class U>
     struct equality_comparable_with
     {
-        template<class U>
+        template<class T>
         static constexpr bool value = std::equality_comparable_with<T,U>; 
     };
 
