@@ -87,5 +87,5 @@ namespace rccpt
 {
     template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
     concept range_of = std::ranges::range<Range> && 
-        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Constraint::template value<Element<Range>>);
+        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
 }
