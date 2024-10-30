@@ -1,116 +1,91 @@
 #include <concepts>
+#include <compare>
 
-// WIP implement all concepts as class https://en.cppreference.com/w/cpp/concepts
 namespace rccpt
 {
-    template<class Type>
-    struct same_as
-    {
-        template<class Source>
-        static constexpr bool value = std::same_as<Source,Type>; 
-    };
+    #define RCCPT_X_N(name)                                     \
+        template<class... Args>                                 \
+        struct name                                             \
+        {                                                       \
+            template<class T>                                   \
+            static constexpr bool value = std::name<T,Args...>; \
+        }
 
-    template<class Base>
-    struct derived_from 
-    {
-        template<class Derived>
-        static constexpr bool value = std::derived_from<Derived,Base>; 
-    };
+    #define RCCPT_X_3(name)                                 \
+        template<class U, class V>                          \
+        struct name                                         \
+        {                                                   \
+            template<class T>                               \
+            static constexpr bool value = std::name<T,U,V>; \
+        }  
 
-    template<class To>
-    struct convertible_to
-    {
-        template<class From>
-        static constexpr bool value = std::convertible_to<From,To>; 
-    };
+    #define RCCPT_X_2(name)                                 \
+        template<class U>                                   \
+        struct name                                         \
+        {                                                   \
+            template<class T>                               \
+            static constexpr bool value = std::name<T,U>;   \
+        }                                                 
 
-    template<class T>
-    struct common_reference_with
-    {
-        template<class U>
-        static constexpr bool value = std::common_reference_with<T,U>; 
-    };
+    #define RCCPT_X_1(name)                                 \
+        struct name                                         \
+        {                                                   \
+            template<class T>                               \
+            static constexpr bool value = std::name<T>;     \
+        }
 
-    template<class T>
-    struct common_with
-    {
-        template<class U>
-        static constexpr bool value = std::common_with<T,U>; 
-    };
+    // https://en.cppreference.com/w/cpp/concepts#Core_language_concepts
+    RCCPT_X_2(same_as);                
+    RCCPT_X_2(derived_from);            
+    RCCPT_X_2(convertible_to);       
+    RCCPT_X_2(common_reference_with);
+    RCCPT_X_2(common_with);  
+    RCCPT_X_2(assignable_from);
+    RCCPT_X_2(swappable_with);    
+    RCCPT_X_N(constructible_from);
+    RCCPT_X_1(integral);
+    RCCPT_X_1(signed_integral);
+    RCCPT_X_1(unsigned_integral);
+    RCCPT_X_1(floating_point);
+    RCCPT_X_1(swappable);
+    RCCPT_X_1(destructible);
+    RCCPT_X_1(default_initializable);
+    RCCPT_X_1(move_constructible);
+    RCCPT_X_1(copy_constructible);
 
-    template<class RHS>
-    struct assignable_from
-    {
-        template<class LHS>
-        static constexpr bool value = std::assignable_from<LHS,RHS>; 
-    };
+    // https://en.cppreference.com/w/cpp/concepts#Comparison_concepts
+    RCCPT_X_2(equality_comparable_with);
+    RCCPT_X_2(totally_ordered_with);        
+    RCCPT_X_2(three_way_comparable_with);
+    RCCPT_X_1(equality_comparable);               
+    RCCPT_X_1(totally_ordered);        
+    RCCPT_X_1(three_way_comparable);
 
-    template<class T>
-    struct swappable_with
-    {
-        template<class U>
-        static constexpr bool value = std::swappable_with<T,U>; 
-    };
+    // https://en.cppreference.com/w/cpp/concepts#Object_concepts
+    RCCPT_X_1(movable);   
+    RCCPT_X_1(copyable);
+    RCCPT_X_1(semiregular);
+    RCCPT_X_1(regular);
 
-    template<class... From>
-    struct constructible_from 
-    {
-        template<class T>
-        static constexpr bool value = std::constructible_from<T,From...>; 
-    };
+    // https://en.cppreference.com/w/cpp/concepts#Callable_concepts
+    RCCPT_X_N(invocable);
+    RCCPT_X_N(regular_invocable);
+    RCCPT_X_N(predicate);
+    RCCPT_X_3(relation);
+    RCCPT_X_3(equivalence_relation);
+    RCCPT_X_3(strict_weak_order);
 
-    template<class U>
-    struct equality_comparable_with
-    {
-        template<class T>
-        static constexpr bool value = std::equality_comparable_with<T,U>; 
-    };
-
-    template<class T>
-    struct totally_ordered_with
-    {
-        template<class U>
-        static constexpr bool value = std::totally_ordered_with<T,U>; 
-    };
-
-    template<class... Args>
-    struct invocable 
-    {
-        template<class Func>
-        static constexpr bool value = std::invocable<Func,Args...>; 
-    };
-
-    template<class... Args>
-    struct regular_invocable 
-    {
-        template<class Func>
-        static constexpr bool value = std::invocable<Func,Args...>; 
-    };
-
-    template<class... Args>
-    struct predicate 
-    {
-        template<class Func>
-        static constexpr bool value = std::predicate<Func,Args...>; 
-    };
-
-    struct integral
-    {
-        template<class T>
-        static constexpr bool value = std::integral<T>;
-    };
+    #undef RCCPT_X_N
+    #undef RCCPT_X_3
+    #undef RCCPT_X_2
+    #undef RCCPT_X_1
 }
 
 #include <ranges>
 
 namespace rccpt
 {
-    // range_of<double>, range_of<filesystem::path>,range_of<filesystem::path>, range_of<convertible_to<filesystemm::path>>
-    // range_of<filesystemm::path,convertible_to>
-    // template<class R, class Constraint , template<class...>class Selector = std::ranges::range_value_t>
-    // concept range_of = std::ranges::range<R> && (std::same_as<Constraint,Selector<R>> || Constraint::template value<Selector<R>>);
-
-    template<class Range, class Type_or_Constraint , template<class...>class Element = std::ranges::range_value_t>
+    template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
     concept range_of = std::ranges::range<Range> && 
-        (std::same_as<Type_or_Constraint,Element<Range>> || Type_or_Constraint::template value<Element<Range>>);
+        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Constraint::template value<Element<Range>>);
 }
