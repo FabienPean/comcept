@@ -1,12 +1,12 @@
 #include "reconcept.hpp"
 
 #include <iostream>
-#include <format>
+#include <array>
 
 auto foo(rccpt::range_of<rccpt::integral> auto R)
 {
     for(auto&& element : R)
-    std::cout<<std::format("{}",element)<<"\n";
+    std::cout<<std::to_string(element)<<"\n";
 }
 
 int main()
