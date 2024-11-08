@@ -1,3 +1,5 @@
+// g++-11 -std=c++20 test_reconcept.cpp 
+
 #include "reconcept.hpp"
 
 #include <iostream>
