@@ -1,7 +1,7 @@
 #include <concepts>
 #include <compare>
 
-namespace rccpt
+namespace ttfy
 {
     #define RCCPT_X_N(name)                                     \
         template<class... Args>                                 \
@@ -83,9 +83,77 @@ namespace rccpt
 
 #include <ranges>
 
-namespace rccpt
+namespace ccpt
 {
     template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
     concept range_of = std::ranges::range<Range> && 
         (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
+
+
+    template <typename T, std::size_t N>
+    concept is_tuple_element = 
+        requires(T t) {
+            typename std::tuple_element_t<N, std::remove_const_t<T>>;
+            { get<N>(t) } -> std::convertible_to<std::tuple_element_t<N, T>&>;
+        };
+
+    template <typename T>
+    concept tuple_like =
+        not std::is_reference_v<T> 
+        and 
+        requires
+        {
+            typename std::tuple_size<T>::type;
+            requires std::same_as<decltype(std::tuple_size_v<T>), const std::size_t>;
+        } 
+        and 
+        []<std::size_t... I>(std::index_sequence<I...>) { return (is_tuple_element<T, I> && ...); }(std::make_index_sequence<std::tuple_size_v<T>>{});
+
+    template <typename T>
+    concept pair_like = tuple_like<T> && std::tuple_size_v<T> == 2;
+
+    template<class T, class Type_or_Trait>
+    concept array_of = 
+        ccpt::tuple_like<T> 
+        and 
+        (
+            // Content of tuple-like is same as given type 
+            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
+            or 
+            // Verify that all elements satisfy the given constraint
+            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
+        );
+
+    template<class T, class... Type_or_Trait>
+    concept tuple_of = 
+        ccpt::tuple_like<T>
+        and
+        sizeof...(Type_or_Trait) == std::tuple_size_v<T>
+        and 
+        // IIFE
+        []<std::size_t... I>(std::index_sequence<I...>) 
+        {
+            // Element-wise check on input tuple
+            constexpr auto check_element = []<std::size_t J, class U>() 
+            {
+                if constexpr (std::same_as<U,std::tuple_element_t<J,T>>)
+                    return true;
+                else
+                    return U::template value<std::tuple_element_t<J,T>>;
+            };
+            return ((check_element.template operator()<,Type_or_Trait>()) &&...);
+        }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
+
+
+        
+}
+
+namespace ttfy
+{
+    template<typename T, template<class...> class E = std::ranges::range_value_t>
+    struct range_of
+    {
+        template<typename R>
+        static constexpr bool value = ccpt::range_of<R, T, E>;
+    };   
 }
