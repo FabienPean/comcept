@@ -79,6 +79,19 @@ namespace ttfy
     #undef RCCPT_X_3
     #undef RCCPT_X_2
     #undef RCCPT_X_1
+
+    struct Any                                    
+    {                                              
+        template<class T>                          
+        static constexpr bool value = true;
+    }
+
+    template<std::size_t N>
+    struct Size                                    
+    {                                              
+        template<class T>                          
+        static constexpr bool value = (std::tuple_size_v<T> == N);
+    }
 }
 
 #include <ranges>
@@ -112,40 +125,39 @@ namespace ccpt
     template <typename T>
     concept pair_like = tuple_like<T> && std::tuple_size_v<T> == 2;
 
-    template<class T, class Type_or_Trait>
+    template<typename T, typename Type_or_Trait, std::size_t S = std::tuple_size_v<T>>
     concept array_of = 
         ccpt::tuple_like<T> 
+        and
+        S == std::tuple_size_v<T>
         and 
         (
             // Content of tuple-like is same as given type 
-            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
+            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
             or 
             // Verify that all elements satisfy the given constraint
-            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
+            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
         );
 
-    template<class T, class... Type_or_Trait>
+    template<typename T, typename... Type_or_Trait>
     concept tuple_of = 
         ccpt::tuple_like<T>
         and
-        sizeof...(Type_or_Trait) == std::tuple_size_v<T>
+        std::tuple_size_v<T> == sizeof...(Type_or_Trait)
         and 
-        // IIFE
+        // IIFE to input index sequence
         []<std::size_t... I>(std::index_sequence<I...>) 
         {
             // Element-wise check on input tuple
-            constexpr auto check_element = []<std::size_t J, class U>() 
+            constexpr auto check_constraint = []<typename ToC, typename E>() 
             {
-                if constexpr (std::same_as<U,std::tuple_element_t<J,T>>)
+                if constexpr (std::same_as<ToC,E>)
                     return true;
                 else
-                    return U::template value<std::tuple_element_t<J,T>>;
+                    return ToC::template value<E>;
             };
-            return ((check_element.template operator()<,Type_or_Trait>()) &&...);
+            return ((check_constraint.template operator()<Type_or_Trait,std::tuple_element_t<I,T>>()) &&...);
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
-
-
-        
 }
 
 namespace ttfy
