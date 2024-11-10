@@ -80,18 +80,7 @@ namespace ttfy
     #undef RCCPT_X_2
     #undef RCCPT_X_1
 
-    struct Any                                    
-    {                                              
-        template<class T>                          
-        static constexpr bool value = true;
-    }
 
-    template<std::size_t N>
-    struct Size                                    
-    {                                              
-        template<class T>                          
-        static constexpr bool value = (std::tuple_size_v<T> == N);
-    }
 }
 
 #include <ranges>
@@ -160,12 +149,45 @@ namespace ccpt
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
 }
 
+#include <tuple>
+
 namespace ttfy
 {
+    struct anything                                    
+    {                                              
+        template<class T>                          
+        static constexpr bool value = true;
+    };
+
+    template<std::size_t N>
+    struct size                                    
+    {                                              
+        template<class T>                          
+        static constexpr bool value = (std::tuple_size_v<T> == N);
+    };
+
     template<typename T, template<class...> class E = std::ranges::range_value_t>
     struct range_of
     {
         template<typename R>
         static constexpr bool value = ccpt::range_of<R, T, E>;
-    };   
+    };
+
+    template<typename Type_or_Trait, int size = -1>
+    struct array_of
+    {
+        template<typename T>
+        static constexpr bool value = ccpt::array_of<T, Type_or_Trait, (size<0 ? std::tuple_size_v<T> : std::size_t(size))>;
+    };
+
+    template<typename... Type_or_Trait>
+    struct tuple_of
+    {
+        template<typename T>
+        static constexpr bool value = ccpt::tuple_of<T, Type_or_Trait...>;
+    };
+
+    
+
+       
 }
