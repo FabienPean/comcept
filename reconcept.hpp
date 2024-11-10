@@ -166,11 +166,11 @@ namespace ttfy
         static constexpr bool value = (std::tuple_size_v<T> == N);
     };
 
-    template<typename T, template<class...> class E = std::ranges::range_value_t>
+    template<typename Type_or_Trait, template<class...> class E = std::ranges::range_value_t>
     struct range_of
     {
         template<typename R>
-        static constexpr bool value = ccpt::range_of<R, T, E>;
+        static constexpr bool value = ccpt::range_of<R, Type_or_Trait, E>;
     };
 
     template<typename Type_or_Trait, int size = -1>
@@ -186,8 +186,5 @@ namespace ttfy
         template<typename T>
         static constexpr bool value = ccpt::tuple_of<T, Type_or_Trait...>;
     };
-
-    
-
-       
+  
 }
