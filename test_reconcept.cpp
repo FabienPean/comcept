@@ -39,15 +39,25 @@ static_assert(not ccpt::tuple_like<std::vector<double>>);
 static_assert(    ccpt::tuple_like<std::tuple<double>>);
 static_assert(    ccpt::tuple_like<std::array<double,2>>);
 
-static_assert(ccpt::array_of<std::tuple<double>,ttfy::floating_point>);
-static_assert(ccpt::array_of<std::tuple<double,double>,ttfy::floating_point>);
+static_assert(    ccpt::array_of<std::tuple<double>       ,ttfy::floating_point  >);
+static_assert(    ccpt::array_of<std::tuple<double,double>,ttfy::floating_point  >);
 static_assert(not ccpt::array_of<std::tuple<double,double>,ttfy::floating_point,1>);
 static_assert(    ccpt::array_of<std::tuple<double,double>,ttfy::floating_point,2>);
 static_assert(not ccpt::array_of<std::tuple<double,double>,ttfy::floating_point,3>);
 
-static_assert(    ccpt::tuple_of<std::tuple<double>,double>);
-static_assert(    ccpt::tuple_of<std::tuple<double>,double>);
+static_assert(    ccpt::tuple_of<std::tuple<double>,double        >);
+static_assert(    ccpt::tuple_of<std::tuple<double>,double        >);
+static_assert(not ccpt::tuple_of<std::tuple<double>,double,double >);
 static_assert(not ccpt::tuple_of<std::tuple<double>,ttfy::integral>);
+
+static_assert(not ccpt::tuple_of<std::tuple<double, int>,double,double>);
+static_assert(    ccpt::tuple_of<std::tuple<double, int>,double,int>);
+static_assert(    ccpt::tuple_of<std::tuple<double, int>,double,ttfy::integral>);
+static_assert(    ccpt::tuple_of<std::tuple<double, int>,ttfy::floating_point,ttfy::integral>);
+static_assert(not ccpt::tuple_of<std::tuple<double, int>,ttfy::integral,ttfy::floating_point>);
+
+
+
 
 
 
