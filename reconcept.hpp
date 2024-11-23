@@ -142,9 +142,12 @@ namespace ccpt
             {
                 if constexpr (std::same_as<ToC,E>)
                     return true;
-                else
+                else if constexpr(requires {ToC::template value<E>;})
                     return ToC::template value<E>;
+                else
+                    return false;
             };
+
             return ((check_constraint.template operator()<Type_or_Trait,std::tuple_element_t<I,T>>()) &&...);
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
 }
