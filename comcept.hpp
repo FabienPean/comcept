@@ -85,7 +85,7 @@ namespace ttfy
 
 #include <ranges>
 
-namespace ccpt
+namespace comcept
 {
     template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
     concept range_of = std::ranges::range<Range> && 
@@ -116,7 +116,7 @@ namespace ccpt
 
     template<typename T, typename Type_or_Trait, std::size_t S = std::tuple_size_v<T>>
     concept array_of = 
-        ccpt::tuple_like<T> 
+        comcept::tuple_like<T> 
         and
         S == std::tuple_size_v<T>
         and 
@@ -130,7 +130,7 @@ namespace ccpt
 
     template<typename T, typename... Type_or_Trait>
     concept tuple_of = 
-        ccpt::tuple_like<T>
+        comcept::tuple_like<T>
         and
         std::tuple_size_v<T> == sizeof...(Type_or_Trait)
         and 
@@ -173,21 +173,21 @@ namespace ttfy
     struct range_of
     {
         template<typename R>
-        static constexpr bool value = ccpt::range_of<R, Type_or_Trait, E>;
+        static constexpr bool value = comcept::range_of<R, Type_or_Trait, E>;
     };
 
     template<typename Type_or_Trait, int size = -1>
     struct array_of
     {
         template<typename T>
-        static constexpr bool value = ccpt::array_of<T, Type_or_Trait, (size<0 ? std::tuple_size_v<T> : std::size_t(size))>;
+        static constexpr bool value = comcept::array_of<T, Type_or_Trait, (size<0 ? std::tuple_size_v<T> : std::size_t(size))>;
     };
 
     template<typename... Type_or_Trait>
     struct tuple_of
     {
         template<typename T>
-        static constexpr bool value = ccpt::tuple_of<T, Type_or_Trait...>;
+        static constexpr bool value = comcept::tuple_of<T, Type_or_Trait...>;
     };
   
 }
