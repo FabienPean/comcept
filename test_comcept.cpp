@@ -5,6 +5,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <variant>
 
 auto print(auto e)
 {
@@ -56,9 +57,9 @@ static_assert(    comcept::tuple_of<std::tuple<double, int>,double,ttfy::integra
 static_assert(    comcept::tuple_of<std::tuple<double, int>,ttfy::floating_point,ttfy::integral>);
 static_assert(not comcept::tuple_of<std::tuple<double, int>,ttfy::integral,ttfy::floating_point>);
 
-
-
-
+static_assert(    comcept::optional_of<std::optional<double>,ttfy::floating_point>);
+static_assert(not comcept::optional_of<std::optional<int>   ,ttfy::floating_point>);
+static_assert(not comcept::optional_of<std::variant<int>    ,ttfy::floating_point>);
 
 
 int main()
