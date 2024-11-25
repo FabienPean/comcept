@@ -134,10 +134,9 @@ namespace comcept
         and
         std::tuple_size_v<T> == sizeof...(Type_or_Trait)
         and 
-        // IIFE to input index sequence
+        // IIFE to input index sequence to process each element of the tuple
         []<std::size_t... I>(std::index_sequence<I...>) 
         {
-            // Element-wise check on input tuple
             constexpr auto check_constraint = []<typename ToC, typename E>() 
             {
                 if constexpr (std::same_as<ToC,E>)
@@ -147,10 +146,9 @@ namespace comcept
                 else
                     return false;
             };
-
+            // Element-wise check on input tuple
             return ((check_constraint.template operator()<Type_or_Trait,std::tuple_element_t<I,T>>()) &&...);
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
-
 
     template <typename T>
     concept optional_like = requires(T t) {std::same_as<decltype(t.value()),typename std::remove_cvref_t<T>::value_type>;};
