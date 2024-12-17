@@ -3,7 +3,7 @@
 #include "comcept.hpp"
 
 #include <iostream>
-#include <array>
+#include <array>²
 #include <vector>
 #include <variant>
 
@@ -34,6 +34,11 @@ auto foo(comcept::range_of<ttfy::range_of<ttfy::range_of<ttfy::integral>>> auto 
 {
     for(auto&& element : R)
         print(element);
+}
+
+auto foo(comcept::tuple_of<ttfy::range_of<ttfy::integral>> auto&& t)
+{
+    std::apply([](auto const& ...e) { (print(e), ...); }, t);
 }
 
 static_assert(not comcept::tuple_like<std::vector<double>>);
@@ -68,7 +73,7 @@ int main()
     foo(std::array{1UL,2UL,3UL});
     foo(std::array{std::array{11UL,21UL,31UL},std::array{12UL,22UL,32UL}});
     foo(std::array{std::array{std::array{11,21,31}},std::array{std::array{12,22,32}}});
-    
-    
+    foo(std::tuple{std::array{11UL,21UL,31UL},std::array{12.,22.,32.}});
+
     return 0;
 }
