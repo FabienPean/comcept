@@ -157,7 +157,7 @@ namespace comcept
 
 
     template <typename T>
-    concept optional_like = requires(T t) {std::same_as<decltype(t.value()),typename std::remove_cvref_t<T>::value_type>;};
+    concept optional_like = requires(T t) {requires std::same_as<std::remove_cvref_t<decltype(t.value())>,typename std::remove_cvref_t<T>::value_type>;};
 
     template<typename T, typename Type_or_Trait>
     concept optional_of = optional_like<T> && (std::same_as<Type_or_Trait,typename std::remove_cvref_t<T>::value_type> || Type_or_Trait::template value<typename std::remove_cvref_t<T>::value_type>);
