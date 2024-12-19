@@ -87,10 +87,19 @@ namespace ttfy
 
 namespace comcept
 {
-    template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
-    concept range_of = std::ranges::range<Range> && 
-        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
+    template<typename... Args>
+    struct And
+    {
+        template<typename T>
+        static constexpr bool value = (Args::template value<T> &&...);
+    };
 
+    template<typename... Args>
+    struct Or
+    {
+        template<typename T>
+        static constexpr bool value = (Args::template value<T> ||...);
+    };
 
     template <typename T, std::size_t N>
     concept is_tuple_element = 
