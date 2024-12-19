@@ -3,40 +3,40 @@
 #include "comcept.hpp"
 
 #include <iostream>
-#include <array>²
+#include <array>
 #include <vector>
 #include <variant>
 
-auto print(auto e)
+auto print(auto&& e)
 {
     std::cout<<std::to_string(e)<<"\n";
 }
 
-auto print(std::ranges::range auto R)
+auto print(std::ranges::range auto&& R)
 {
     for(auto&& element : R)
         print(element);
 }
 
-auto foo(comcept::range_of<ttfy::integral> auto R)
+auto foo(comcept::range_of<ttfy::integral> auto&& R)
 {
     for(auto&& element : R)
     std::cout<<std::to_string(element)<<"\n";
 }
 
-auto foo(comcept::range_of<ttfy::range_of<ttfy::integral>> auto R)
+// auto foo(comcept::range_of<ttfy::range_of<ttfy::integral>> auto&& R)
+// {
+//     for(auto&& element : R)
+//         print(element);
+// }
+
+auto foo(comcept::range_of<ttfy::range_of<ttfy::range_of<ttfy::integral>>> auto&& R)
 {
     for(auto&& element : R)
         print(element);
 }
 
-auto foo(comcept::range_of<ttfy::range_of<ttfy::range_of<ttfy::integral>>> auto R)
-{
-    for(auto&& element : R)
-        print(element);
-}
-
-auto foo(comcept::tuple_of<ttfy::range_of<ttfy::integral>> auto&& t)
+auto foo(comcept::array_of<ttfy::range_of<ttfy::Or<ttfy::integral,ttfy::floating_point>>> auto&& t)
 {
     std::apply([](auto const& ...e) { (print(e), ...); }, t);
 }
