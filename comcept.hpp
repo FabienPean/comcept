@@ -87,19 +87,7 @@ namespace ttfy
 
 namespace comcept
 {
-    template<typename... Args>
-    struct And
-    {
-        template<typename T>
-        static constexpr bool value = (Args::template value<T> &&...);
-    };
 
-    template<typename... Args>
-    struct Or
-    {
-        template<typename T>
-        static constexpr bool value = (Args::template value<T> ||...);
-    };
 
     template <typename T, std::size_t N>
     concept is_tuple_element = 
@@ -123,25 +111,15 @@ namespace comcept
     template <typename T>
     concept pair_like = tuple_like<T> && std::tuple_size_v<T> == 2;
 
-    template<typename T, typename Type_or_Trait, std::size_t S = std::tuple_size_v<T>>
-    concept array_of = 
-        comcept::tuple_like<T> 
-        and
-        S == std::tuple_size_v<T>
-        and 
-        (
-            // Content of tuple-like is same as given type 
-            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
-            or 
-            // Verify that all elements satisfy the given constraint
-            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
-        );
+
+    template<typename T, std::size_t N>
+    concept size = tuple_like<T> && std::tuple_size_v<T> == N;
 
     template<typename T, typename... Type_or_Trait>
-    concept tuple_of = 
+    concept tuple_of =
         comcept::tuple_like<T>
         and
-        std::tuple_size_v<T> == sizeof...(Type_or_Trait)
+        std::tuple_size_v<T> == sizeof...(Type_or_Trait) 
         and 
         // IIFE to input index sequence to process each element of the tuple
         []<std::size_t... I>(std::index_sequence<I...>) 
@@ -158,6 +136,25 @@ namespace comcept
             // Element-wise check on input tuple
             return ((check_constraint.template operator()<Type_or_Trait,std::tuple_element_t<I,T>>()) &&...);
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
+
+    template<typename T, typename Type_or_Trait, std::size_t S = std::tuple_size_v<T>>
+    concept array_of = 
+        comcept::tuple_like<T> 
+        and
+        S == std::tuple_size_v<T>
+        and 
+        (
+            // Content of tuple-like is same as given type 
+            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
+            or 
+            // Verify that all elements satisfy the given constraint
+            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
+        );
+
+    template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
+    concept range_of = std::ranges::range<Range> && 
+        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
+
 
     template <typename T>
     concept optional_like = requires(T t) {std::same_as<decltype(t.value()),typename std::remove_cvref_t<T>::value_type>;};
@@ -180,7 +177,21 @@ namespace ttfy
     struct size                                    
     {                                              
         template<class T>                          
-        static constexpr bool value = (std::tuple_size_v<T> == N);
+        static constexpr bool value = comcept::size<T,N>;
+    };
+
+    template<typename... Args>
+    struct And
+    {
+        template<typename T>
+        static constexpr bool value = (Args::template value<T> &&...);
+    };
+
+    template<typename... Args>
+    struct Or
+    {
+        template<typename T>
+        static constexpr bool value = (Args::template value<T> ||...);
     };
 
     template<typename Type_or_Trait, template<class...> class E = std::ranges::range_value_t>
