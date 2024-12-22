@@ -202,7 +202,7 @@ namespace ttfy
         static constexpr bool value = comcept::range_of<R, Type_or_Trait, E>;
     };
 
-    template<typename Type_or_Trait, std::size_t size = 0>
+    template<typename Type_or_Trait, int size = 0>
     struct array_of
     {
         template<typename T>
