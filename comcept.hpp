@@ -137,24 +137,22 @@ namespace comcept
             return ((check_constraint.template operator()<Type_or_Trait,std::tuple_element_t<I,T>>()) &&...);
         }(std::make_index_sequence<sizeof...(Type_or_Trait)>{});
 
-    template<typename T, typename Type_or_Trait, std::size_t S = std::tuple_size_v<T>>
+    template<typename T, typename Type_or_Trait, std::size_t S = 0>
     concept array_of = 
         comcept::tuple_like<T> 
         and
-        S == std::tuple_size_v<T>
+        (S==0 || S == std::tuple_size_v<T>)
         and 
         (
             // Content of tuple-like is same as given type 
-            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
+            []<std::size_t... I>(std::index_sequence<I...>) { return (std::same_as<Type_or_Trait,std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
             or 
             // Verify that all elements satisfy the given constraint
-            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<S>{})
+            []<std::size_t... I>(std::index_sequence<I...>) { return (Type_or_Trait::template value<std::tuple_element_t<I,T>> &&...); }(std::make_index_sequence<std::tuple_size_v<T>>{})
         );
 
-    template<class Range, class Type_or_Trait , template<class...>class Element = std::ranges::range_value_t>
-    concept range_of = std::ranges::range<Range> && 
-        (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
-
+    template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
+    concept range_of = std::ranges::range<Range> && (std::same_as<Type_or_Trait,Element<Range>> || Type_or_Trait::template value<Element<Range>>);
 
     template <typename T>
     concept optional_like = requires(T t) {requires std::same_as<std::remove_cvref_t<decltype(t.value())>,typename std::remove_cvref_t<T>::value_type>;};
@@ -201,11 +199,11 @@ namespace ttfy
         static constexpr bool value = comcept::range_of<R, Type_or_Trait, E>;
     };
 
-    template<typename Type_or_Trait, int size = -1>
+    template<typename Type_or_Trait, std::size_t size = 0>
     struct array_of
     {
         template<typename T>
-        static constexpr bool value = comcept::array_of<T, Type_or_Trait, (size<0 ? std::tuple_size_v<T> : std::size_t(size))>;
+        static constexpr bool value = comcept::array_of<T, Type_or_Trait, size>;
     };
 
     template<typename... Type_or_Trait>
