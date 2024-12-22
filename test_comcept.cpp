@@ -1,4 +1,4 @@
-// g++-11 -std=c++20 test_comcept.cpp 
+// g++ -std=c++20 test_comcept.cpp 
 
 #include "comcept.hpp"
 
@@ -24,10 +24,16 @@ auto foo(comcept::range_of<ttfy::integral> auto&& R)
     std::cout<<std::to_string(element)<<"\n";
 }
 
+// // The following two `foo` overload are ambiguous overload with std::array
+// // `std::array` is both a range and a tuple, but each constraint form a disjoint set
 // auto foo(comcept::range_of<ttfy::range_of<ttfy::integral>> auto&& R)
 // {
 //     for(auto&& element : R)
 //         print(element);
+// }
+// auto foo(comcept::array_of<ttfy::range_of<ttfy::Or<ttfy::integral,ttfy::floating_point>>> auto&& t)
+// {
+//     std::apply([](auto const& ...e) { (print(e), ...); }, t);
 // }
 
 auto foo(comcept::range_of<ttfy::range_of<ttfy::range_of<ttfy::integral>>> auto&& R)
@@ -50,6 +56,10 @@ static_assert(    comcept::array_of<std::tuple<double,double>,ttfy::floating_poi
 static_assert(not comcept::array_of<std::tuple<double,double>,ttfy::floating_point,1>);
 static_assert(    comcept::array_of<std::tuple<double,double>,ttfy::floating_point,2>);
 static_assert(not comcept::array_of<std::tuple<double,double>,ttfy::floating_point,3>);
+static_assert(not comcept::array_of<std::vector<double>,ttfy::floating_point,3>);
+static_assert(not comcept::array_of<std::vector<double>,ttfy::floating_point>);
+
+
 
 static_assert(    comcept::tuple_of<std::tuple<double>,double        >);
 static_assert(    comcept::tuple_of<std::tuple<double>,double        >);
