@@ -18,14 +18,23 @@ auto print(std::ranges::range auto&& R)
         print(element);
 }
 
+/// This overload conflicts with 
+/// auto foo(comcept::array_of<ttfy::range_of<ttfy::Or<ttfy::integral,ttfy::floating_point>>> auto&& t);
+/// because array_of does not subsume range
+// auto foo(std::ranges::range auto&& R) 
+// {
+//     for(auto&& element : R)
+//         print(element);
+// }
+
 auto foo(comcept::range_of<ttfy::integral> auto&& R)
 {
     for(auto&& element : R)
-    std::cout<<std::to_string(element)<<"\n";
+        print(element);
 }
 
-// // The following two `foo` overload are ambiguous overload with std::array
-// // `std::array` is both a range and a tuple, but each constraint form a disjoint set
+/// The following two `foo` overload are ambiguous overload with std::array
+/// `std::array` is both a range and a tuple, but each constraint form a disjoint set
 // auto foo(comcept::range_of<ttfy::range_of<ttfy::integral>> auto&& R)
 // {
 //     for(auto&& element : R)
