@@ -47,6 +47,10 @@ auto foo(comcept::array_of<ttfy::range_of<ttfy::Or<ttfy::integral,ttfy::floating
     std::apply([](auto const& ...e) { (print(e), ...); }, t);
 }
 
+static_assert(    comcept::range_of<std::vector<double>,comcept::compose<std::is_floating_point>>);
+static_assert(not comcept::range_of<std::tuple<double> ,comcept::compose<std::is_floating_point>>);
+
+
 static_assert(not comcept::tuple_like<std::vector<double>>);
 static_assert(    comcept::tuple_like<std::tuple<double>>);
 static_assert(    comcept::tuple_like<std::array<double,2>>);

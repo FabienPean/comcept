@@ -87,6 +87,12 @@ namespace ttfy
 
 namespace comcept
 {
+    template<template<typename>typename TypeTrait, typename... Args>
+    struct compose
+    {
+        template<typename T>
+        static constexpr bool value = TypeTrait<T,Args...>::value;
+    };
 
 
     template <typename T, std::size_t N>
