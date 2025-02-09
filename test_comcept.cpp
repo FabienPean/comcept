@@ -59,6 +59,9 @@ auto foo(comcept::array_of<ttfy::range_of<ttfy::Or<ttfy::integral,ttfy::floating
 static_assert(    comcept::range_of<std::vector<double>,comcept::compose<std::is_floating_point>>);
 static_assert(not comcept::range_of<std::tuple<double> ,comcept::compose<std::is_floating_point>>);
 
+static_assert(not comcept::range_of<std::vector<double> ,comcept::compose<std::is_same,int>>);
+static_assert(    comcept::range_of<std::vector<double> ,comcept::compose<std::is_same,double>>);
+
 
 static_assert(not comcept::tuple_like<std::vector<double>>);
 static_assert(    comcept::tuple_like<std::tuple<double>>);
