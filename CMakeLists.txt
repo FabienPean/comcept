@@ -7,6 +7,7 @@ project(
 )
 
 add_library(comcept INTERFACE)
+add_library(comcept::comcept ALIAS comcept)
 target_include_directories(
     comcept 
     INTERFACE 
@@ -15,8 +16,8 @@ target_include_directories(
 )
 target_compile_features(comcept INTERFACE cxx_std_20)
 install(DIRECTORY "include/${PROJECT_NAME}" DESTINATION "include/${PROJECT_NAME}")
-
-# Packaging
+#########################################################################################
+### Packaging
 install(TARGETS ${PROJECT_NAME}
         EXPORT  ${PROJECT_NAME}Targets
         LIBRARY DESTINATION lib
@@ -47,11 +48,12 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 )
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" DESTINATION "share/${PROJECT_NAME}")
 
-
+#########################################################################################
+### Tests
 add_executable(comcept_tests)
-target_link_libraries(comcept_tests PRIVATE comcept)
+target_link_libraries(comcept_tests PRIVATE comcept::comcept)
 target_sources(comcept_tests PRIVATE tests/range_of.cpp)
-target_compile_options(comcept_tests PRIVATE -fconcepts-diagnostics-depth=5)
+# target_compile_options(comcept_tests PRIVATE -fconcepts-diagnostics-depth=5)
 
 
 
