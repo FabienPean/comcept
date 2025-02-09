@@ -87,32 +87,45 @@ namespace ttfy
 
 namespace comcept
 {
-    template<template<typename>typename TypeTrait, typename... Args>
+    /// compose
+    /// 
+    /// Helper struct to enable composing the standard library type traits with this library
+    template<template<typename...>typename TypeTrait, typename... Args>
     struct compose
     {
         template<typename T>
         static constexpr bool value = TypeTrait<T,Args...>::value;
     };
+    
+    /// composable
+    /// 
+    /// Verify that a trait can be composed according to this library requirement
+    template<typename T, typename U>
+    concept composable = std::same_as<decltype(T::template value<U>), bool>;
 
-
+    /// has_tuple_element
+    /// 
+    /// Concept to check if element N exists and returns expected type from tuple T
     template <typename T, std::size_t N>
-    concept is_tuple_element = 
+    concept has_tuple_element = 
         requires(T t) {
-            typename std::tuple_element_t<N, std::remove_const_t<T>>;
-            { get<N>(t) } -> std::convertible_to<std::tuple_element_t<N, T>&>;
+            typename std::tuple_element_t<N, std::remove_cvref_t<T>>;
+            { get<N>(t) } -> std::convertible_to<std::tuple_element_t<N, std::remove_cvref_t<T>>&>;
         };
 
+    /// tuple_like
+    /// pair_like
+    /// 
+    /// Concept checking that a type implements the _tuple protocol_
     template <typename T>
     concept tuple_like =
-        not std::is_reference_v<T> 
-        and 
         requires
         {
-            typename std::tuple_size<T>::type;
-            requires std::same_as<decltype(std::tuple_size_v<T>), const std::size_t>;
+            typename std::tuple_size<std::remove_cvref_t<T>>::type;
+            requires std::same_as<decltype(std::tuple_size_v<std::remove_cvref_t<T>>), const std::size_t>;
         } 
         and 
-        []<std::size_t... I>(std::index_sequence<I...>) { return (is_tuple_element<T, I> && ...); }(std::make_index_sequence<std::tuple_size_v<T>>{});
+        []<std::size_t... I>(std::index_sequence<I...>) { return (has_tuple_element<std::remove_cvref_t<T>, I> && ...); }(std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>{});
 
     template <typename T>
     concept pair_like = tuple_like<T> && std::tuple_size_v<T> == 2;
