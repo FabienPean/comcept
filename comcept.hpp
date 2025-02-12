@@ -3,7 +3,7 @@
 
 namespace ttfy
 {
-    #define COMCEPT_X_N(name)                                     \
+    #define COMCEPT_TRAITIFY_N(name)                                     \
         template<class... Args>                                 \
         struct name                                             \
         {                                                       \
@@ -11,7 +11,7 @@ namespace ttfy
             static constexpr bool value = std::name<T,Args...>; \
         }
 
-    #define COMCEPT_X_3(name)                                 \
+    #define COMCEPT_TRAITIFY_3(name)                                 \
         template<class U, class V>                          \
         struct name                                         \
         {                                                   \
@@ -19,7 +19,7 @@ namespace ttfy
             static constexpr bool value = std::name<T,U,V>; \
         }  
 
-    #define COMCEPT_X_2(name)                                 \
+    #define COMCEPT_TRAITIFY_2(name)                                 \
         template<class U>                                   \
         struct name                                         \
         {                                                   \
@@ -27,7 +27,7 @@ namespace ttfy
             static constexpr bool value = std::name<T,U>;   \
         }                                                 
 
-    #define COMCEPT_X_1(name)                                 \
+    #define COMCEPT_TRAITIFY_1(name)                                 \
         struct name                                         \
         {                                                   \
             template<class T>                               \
@@ -35,50 +35,50 @@ namespace ttfy
         }
 
     // https://en.cppreference.com/w/cpp/concepts#Core_language_concepts
-    COMCEPT_X_2(same_as);                
-    COMCEPT_X_2(derived_from);            
-    COMCEPT_X_2(convertible_to);       
-    COMCEPT_X_2(common_reference_with);
-    COMCEPT_X_2(common_with);  
-    COMCEPT_X_2(assignable_from);
-    COMCEPT_X_2(swappable_with);    
-    COMCEPT_X_N(constructible_from);
-    COMCEPT_X_1(integral);
-    COMCEPT_X_1(signed_integral);
-    COMCEPT_X_1(unsigned_integral);
-    COMCEPT_X_1(floating_point);
-    COMCEPT_X_1(swappable);
-    COMCEPT_X_1(destructible);
-    COMCEPT_X_1(default_initializable);
-    COMCEPT_X_1(move_constructible);
-    COMCEPT_X_1(copy_constructible);
+    COMCEPT_TRAITIFY_2(same_as);                
+    COMCEPT_TRAITIFY_2(derived_from);            
+    COMCEPT_TRAITIFY_2(convertible_to);       
+    COMCEPT_TRAITIFY_2(common_reference_with);
+    COMCEPT_TRAITIFY_2(common_with);  
+    COMCEPT_TRAITIFY_2(assignable_from);
+    COMCEPT_TRAITIFY_2(swappable_with);    
+    COMCEPT_TRAITIFY_N(constructible_from);
+    COMCEPT_TRAITIFY_1(integral);
+    COMCEPT_TRAITIFY_1(signed_integral);
+    COMCEPT_TRAITIFY_1(unsigned_integral);
+    COMCEPT_TRAITIFY_1(floating_point);
+    COMCEPT_TRAITIFY_1(swappable);
+    COMCEPT_TRAITIFY_1(destructible);
+    COMCEPT_TRAITIFY_1(default_initializable);
+    COMCEPT_TRAITIFY_1(move_constructible);
+    COMCEPT_TRAITIFY_1(copy_constructible);
 
     // https://en.cppreference.com/w/cpp/concepts#Comparison_concepts
-    COMCEPT_X_2(equality_comparable_with);
-    COMCEPT_X_2(totally_ordered_with);        
-    COMCEPT_X_2(three_way_comparable_with);
-    COMCEPT_X_1(equality_comparable);               
-    COMCEPT_X_1(totally_ordered);        
-    COMCEPT_X_1(three_way_comparable);
+    COMCEPT_TRAITIFY_2(equality_comparable_with);
+    COMCEPT_TRAITIFY_2(totally_ordered_with);        
+    COMCEPT_TRAITIFY_2(three_way_comparable_with);
+    COMCEPT_TRAITIFY_1(equality_comparable);               
+    COMCEPT_TRAITIFY_1(totally_ordered);        
+    COMCEPT_TRAITIFY_1(three_way_comparable);
 
     // https://en.cppreference.com/w/cpp/concepts#Object_concepts
-    COMCEPT_X_1(movable);   
-    COMCEPT_X_1(copyable);
-    COMCEPT_X_1(semiregular);
-    COMCEPT_X_1(regular);
+    COMCEPT_TRAITIFY_1(movable);   
+    COMCEPT_TRAITIFY_1(copyable);
+    COMCEPT_TRAITIFY_1(semiregular);
+    COMCEPT_TRAITIFY_1(regular);
 
     // https://en.cppreference.com/w/cpp/concepts#Callable_concepts
-    COMCEPT_X_N(invocable);
-    COMCEPT_X_N(regular_invocable);
-    COMCEPT_X_N(predicate);
-    COMCEPT_X_3(relation);
-    COMCEPT_X_3(equivalence_relation);
-    COMCEPT_X_3(strict_weak_order);
+    COMCEPT_TRAITIFY_N(invocable);
+    COMCEPT_TRAITIFY_N(regular_invocable);
+    COMCEPT_TRAITIFY_N(predicate);
+    COMCEPT_TRAITIFY_3(relation);
+    COMCEPT_TRAITIFY_3(equivalence_relation);
+    COMCEPT_TRAITIFY_3(strict_weak_order);
 
-    #undef COMCEPT_X_N
-    #undef COMCEPT_X_3
-    #undef COMCEPT_X_2
-    #undef COMCEPT_X_1
+    #undef COMCEPT_TRAITIFY_N
+    #undef COMCEPT_TRAITIFY_3
+    #undef COMCEPT_TRAITIFY_2
+    #undef COMCEPT_TRAITIFY_1
 
 
 }
