@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 #pragma once
 
 #define COMCEPT_TRAITIFY_N(name)                                   \
