@@ -1,26 +1,65 @@
 #include <comcept/comcept.hpp>
 #include <comcept/concepts.hpp>
+
+#include <doctest/doctest.h>
+
 #include <iostream>
+#include <vector>
+#include <array>
 
-auto print(auto&& e)
+using namespace std::string_literals;
+namespace trt = comcept::trait;
+
+
+///====================================================================================================================
+/// Compile-time
+///====================================================================================================================
+
+// concept satisfaction
+static_assert(    comcept::range_of<std::vector<double>,double>);
+static_assert(    comcept::range_of<std::vector<double>,comcept::trait::floating_point>);
+static_assert(not comcept::range_of<std::vector<double>,comcept::trait::integral>);
+
+static_assert(not comcept::range_of<std::vector<double>,double&>);
+static_assert(    comcept::range_of<std::vector<double>,double&, std::ranges::range_reference_t>);
+
+// overload resolution
+constexpr auto overload(comcept::range_of<trt::integral> auto&& R)
 {
-    std::cout<<std::to_string(e)<<"\n";
+    return 11;
+}
+constexpr auto overload(comcept::range_of<trt::range_of<trt::integral>> auto&& R)
+{
+    return 101;
+}
+static_assert( 11 == overload(std::array{1,2}));
+static_assert( 11 == overload(std::vector{1,2}));
+static_assert(101 == overload(std::array{std::array{1,2},std::array{2,3}}));
+static_assert(101 == overload(std::array{std::vector{1,2},std::vector{2,3}}));
+
+
+///====================================================================================================================
+/// Run-time
+///====================================================================================================================
+
+constexpr auto sum(comcept::range_of<comcept::trait::integral> auto&& range)
+{
+    std::ranges::range_value_t<decltype(range)> total = {};
+    for(auto&& element : range)
+        total += element;
+    return total; 
 }
 
-auto print(std::ranges::range auto&& R)
+constexpr auto sum(comcept::range_of<comcept::trait::floating_point> auto&& range)
 {
-    for(auto&& element : R)
-        print(element);
+    std::ranges::range_value_t<decltype(range)> total = {};
+    for(auto&& element : range)
+        total += element;
+    return total; 
 }
 
-auto foo(comcept::range_of<comcept::trait::integral> auto&& R)
+TEST_CASE("Testing composable concept `range_of`")
 {
-    for(auto&& element : R)
-        print(element);
-}
-
-int main()
-{
-    foo(std::array{1,2,3});
-    return 0;
+    CHECK(sum(std::array{1,2,3}) == 6);
+    CHECK(sum(std::array{-1.,1.,2.}) == 2.);
 }
