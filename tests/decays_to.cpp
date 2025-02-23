@@ -1,10 +1,6 @@
 #include <comcept/comcept.hpp>
 #include <comcept/concepts.hpp>
-#include <iostream>
-#include <vector>
-#include <array>
 
-using namespace std::string_literals;
 namespace trt = comcept::trait;
 
 ///====================================================================================================================
