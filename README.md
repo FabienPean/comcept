@@ -41,6 +41,26 @@ int main()
 }
 ```
 
-## Principle
+## Installation
+
+The library is header-only and the content of include folder simply needs to be added on the include directory path of the compiler with the `-I` argument. Alternatively, this repository is CMake ready and provides a target name `comcept::comcept` to link your project to. For example with `FetchContent` tools. 
+
+```cmake
+FetchContent_Declare(
+  comcept
+  GIT_REPOSITORY https://github.com/FabienPean/comcept.git
+  GIT_TAG        main
+  SYSTEM
+  FIND_PACKAGE_ARGS # FIND_PACKAGE_ARGS can also be given with nothing after it, which indicates that find_package() can still be called if FETCHCONTENT_TRY_FIND_PACKAGE_MODE is set to OPT_IN, or is not set.
+)
+FetchContent_MakeAvailable(comcept)
+```
+
+and then linked to your target afterwards as such
+
+```cmake
+add_executable(main main.cpp)
+target_link_libraries(main comcept::comcept)
+```
 
 ## Usage
