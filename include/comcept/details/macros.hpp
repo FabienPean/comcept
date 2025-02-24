@@ -15,7 +15,7 @@
     {                                                   \
         template<class T>                               \
         static constexpr bool value = std::name<T,U,V>; \
-    }  
+    }
 
 #define COMCEPT_TRAITIFY_2(name)                        \
     template<class U>                                   \
@@ -23,7 +23,7 @@
     {                                                   \
         template<class T>                               \
         static constexpr bool value = std::name<T,U>;   \
-    }                                                 
+    }
 
 #define COMCEPT_TRAITIFY_1(name)                        \
     struct name                                         \

@@ -7,20 +7,30 @@
 namespace comcept
 {
     /// Defines the core requirement that a type must fulfill to be used as argument in a composable concept
+    /// Note that it is not possible to verify the existence of a template,
+    /// hence the need for a specific type _Type_ template argument.
     template<typename Trait, typename Type>
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
+    /// Helper struct to enable composing the standard library type traits with this library
+    template<template<typename...>typename TypeTrait, typename... Args>
+    struct compose
+    {
+        template<typename T>
+        static constexpr bool value = TypeTrait<T,Args...>::value;
+    };
+
     /// Verify that a type fulfills a constraint expressed via a composable trait, as defined by this library
-    template<typename Trait, typename Type>
-    concept satisfy = composable<Trait,Type> && (Trait::template value<Type>) == true;
+    template<typename Type, typename Trait>
+    concept satisfy = composable<Trait,Type> && (Trait::template value<Type> == true);
 
     /// Composable concept to constrain on the content of a range
     template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
-    concept range_of = std::ranges::range<Range> && (std::same_as<Type_or_Trait,Element<Range>> || satisfy<Type_or_Trait,Element<Range>>);
+    concept range_of = std::ranges::range<Range> && (std::same_as<Type_or_Trait,Element<Range>> || satisfy<Element<Range>,Type_or_Trait>);
 
     /// Composable concept to constrain the end result of a call to `std::decay_t`
     template<typename T, typename Type_or_Trait>
-    concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> ||  satisfy<Type_or_Trait,std::decay_t<T>>;
+    concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> ||  satisfy<std::decay_t<T>,Type_or_Trait>;
 }
 
 namespace comcept::trait
@@ -40,7 +50,4 @@ namespace comcept::trait
         template<typename T>
         static constexpr bool value = comcept::decays_to<T, Type_or_Trait>;
     };
-
-    
-
 }

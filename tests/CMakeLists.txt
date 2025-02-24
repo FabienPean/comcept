@@ -7,6 +7,7 @@ target_sources(comcept_tests
         main.cpp 
         range_of.cpp 
         decays_to.cpp
+        compose.cpp
 )
 target_compile_features(comcept INTERFACE cxx_std_23)
 
