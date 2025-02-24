@@ -10,9 +10,17 @@ namespace comcept
     template<typename Trait, typename Type>
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
+    /// Helper struct to enable composing the standard library type traits with this library
+    template<template<typename...>typename TypeTrait, typename... Args>
+    struct compose
+    {
+        template<typename T>
+        static constexpr bool value = TypeTrait<T,Args...>::value;
+    };
+
     /// Verify that a type fulfills a constraint expressed via a composable trait, as defined by this library
     template<typename Trait, typename Type>
-    concept satisfy = composable<Trait,Type> && (Trait::template value<Type>) == true;
+    concept satisfy = composable<Trait,Type> && (Trait::template value<Type> == true);
 
     /// Composable concept to constrain on the content of a range
     template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
