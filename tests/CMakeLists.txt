@@ -9,7 +9,6 @@ target_sources(comcept_tests
         decays_to.cpp
         compose.cpp
 )
-target_compile_features(comcept INTERFACE cxx_std_23)
 
 include(FetchContent)
 FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/onqtam/doctest GIT_TAG v2.4.11)
