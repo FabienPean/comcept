@@ -23,6 +23,10 @@ static_assert(not comcept::range_of<std::vector<double>,comcept::trait::integral
 static_assert(not comcept::range_of<std::vector<double>,double&>);
 static_assert(    comcept::range_of<std::vector<double>,double&, std::ranges::range_reference_t>);
 
+///====================================================================================================================
+/// Run-time
+///====================================================================================================================
+
 // overload resolution
 constexpr auto overload(comcept::range_of<trt::integral> auto&& R)
 {
@@ -32,15 +36,6 @@ constexpr auto overload(comcept::range_of<trt::range_of<trt::integral>> auto&& R
 {
     return 101;
 }
-static_assert( 11 == overload(std::array{1,2}));
-static_assert( 11 == overload(std::vector{1,2}));
-static_assert(101 == overload(std::array{std::array{1,2},std::array{2,3}}));
-static_assert(101 == overload(std::array{std::vector{1,2},std::vector{2,3}}));
-
-
-///====================================================================================================================
-/// Run-time
-///====================================================================================================================
 
 constexpr auto sum(comcept::range_of<comcept::trait::integral> auto&& range)
 {
@@ -60,6 +55,10 @@ constexpr auto sum(comcept::range_of<comcept::trait::floating_point> auto&& rang
 
 TEST_CASE("Testing composable concept `range_of`")
 {
+    CHECK( 11 == overload(std::array{1,2}));
+    CHECK( 11 == overload(std::vector{1,2}));
+    CHECK(101 == overload(std::array{std::array{1,2},std::array{2,3}}));
+    CHECK(101 == overload(std::array{std::vector{1,2},std::vector{2,3}}));
     CHECK(sum(std::array{1,2,3}) == 6);
     CHECK(sum(std::array{-1.,1.,2.}) == 2.);
 }
