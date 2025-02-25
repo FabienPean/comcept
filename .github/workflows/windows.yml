@@ -26,7 +26,7 @@ jobs:
     - name: CMake
       env:
         CXX: ${{matrix.cxx}}
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_STANDARD=${{matrix.std}}
+      run: cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_STANDARD=${{matrix.std}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build 
