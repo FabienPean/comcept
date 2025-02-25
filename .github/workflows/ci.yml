@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  linux:
     runs-on: ubuntu-latest
     
     strategy:
@@ -33,7 +33,7 @@ jobs:
         CXX=${{matrix.cxx}}
         sudo apt install ${CXX/"clang++"/"clang"} # substitutes inline clang++ by clang because clang++ cannot be seldom installed
 
-    - name: Configure CMake
+    - name: CMake
       env:
         CXX: ${{matrix.cxx}}
       run: cmake -B ${{github.workspace}}/build -DCMAKE_CXX_STANDARD=${{matrix.std}}
