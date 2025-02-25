@@ -1,0 +1,37 @@
+name: Windows
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+#######################################################################################################################
+  windows:    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019,windows-2022]
+        std: [20, 23]
+        cxx: [g++,clang++,clang-cl,cl]
+    
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: ilammy/msvc-dev-cmd@v1
+
+    - name: CMake
+      env:
+        CXX: ${{matrix.cxx}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_CXX_STANDARD=${{matrix.std}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build 
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build ${{github.workspace}}/build --target test
+
