@@ -20,6 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
+    - uses: seanmiddleditch/gha-setup-ninja@master
 
     - if: ${{matrix.cxx == 'cl'}}
       uses: ilammy/msvc-dev-cmd@v1
