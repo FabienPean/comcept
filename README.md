@@ -3,7 +3,7 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/FabienPean/comcept?quickstart=1)
 ![Linux](https://github.com/FabienPean/comcept/actions/workflows/ci.yml/badge.svg)
 
-No this is not a typo :smile: it is the contraction of _Composable Concepts_. After using C++20 and concepts for a while, have you ever wondered _"Dang, I really wish I could constrain the element type of this range"_, well do not go any further ! It reformulates concepts and type traits into a unified trait interface that can be used to build higher-order concepts. Currently, it has only a few of them, but destined to increase, where it makes sense _and where it is possible_.
+No this is not a typo :smile: it is the contraction of _Composable Concepts_. After using C++20 and concepts for a while, have you ever wondered _"Dang, I really wish I could constrain the element type of this range"_, well do not go any further ! This library reformulates concepts and type traits into a unified type trait interface that can be used to build higher-order concepts. Currently, it has only a few of them, but their number is destined to increase, where it makes sense _and where it is possible_.
 
 
 ## Usage
