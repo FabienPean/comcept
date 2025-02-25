@@ -5,6 +5,7 @@ project(
     VERSION 0.0.1
     LANGUAGES CXX 
 )
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(comcept INTERFACE)
 add_library(comcept::comcept ALIAS comcept)
