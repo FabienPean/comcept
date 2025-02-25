@@ -21,7 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: ilammy/msvc-dev-cmd@v1
+    - if: ${{matrix.cxx == 'cl'}}
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: CMake
       env:
