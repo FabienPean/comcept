@@ -1,12 +1,9 @@
-# Comcept
+# Comcept [<img align="right" src="https://github.com/codespaces/badge.svg">](https://codespaces.new/FabienPean/comcept?quickstart=1)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/FabienPean/comcept?quickstart=1)
 ![Linux](https://github.com/FabienPean/comcept/actions/workflows/linux.yml/badge.svg)
 ![Windows](https://github.com/FabienPean/comcept/actions/workflows/windows.yml/badge.svg)
 
-
-No this is not a typo :smile: it is the contraction of _Composable Concepts_. After using C++20 and concepts for a while, have you ever wondered _"Dang, I really wish I could constrain the element type of this range"_, well do not go any further ! This library reformulates concepts and type traits into a unified type trait interface that can be used to build higher-order concepts. Currently, it has only a few of them, but their number is destined to increase, where it makes sense _and where it is possible_.
-
+No this is not a typo :smile: it is the contraction of _Composable Concepts_. After using C++20 and concepts for a while, have you ever wondered _"Dang, I really wish I could constrain the element type of this range"_, then you are at the right place ! This library reformulates concepts and type traits into a unified type trait interface that can be used to build higher-order concepts. Do not expect blazing compilation time, as the goal was a _pleasant_ interface. Currently, it has only a few of them, but their number is destined to increase, where it makes sense _and where it is possible_.
 
 ## Usage
 
@@ -31,7 +28,7 @@ auto foo(ccpt::range_of<trt::floating_point> auto&& R)
         std::print("{}\n",e)
 }
 // C
-auto foo(ccpt::range_of<ccpt::range_of<trt::integral>> auto&& R)
+auto foo(ccpt::range_of<trt::range_of<trt::integral>> auto&& R)
 {
     std::print("foo(range_of<range_of<integral>>)\n");
     for(auto&& e : R)
