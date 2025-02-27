@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(
-    comcept 
+    comcept
+    DESCRIPTION "C++20 and beyond composable concepts"
     VERSION 0.0.1
     LANGUAGES CXX 
 )
