@@ -3,6 +3,7 @@
 
 #include <concepts>
 #include <ranges>
+#include <type_traits>
 
 namespace comcept
 {

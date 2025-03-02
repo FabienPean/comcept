@@ -3,7 +3,7 @@
 
 #include <compare>
 
-#include "details/macros.hpp"
+#include <comcept/detail/macros.hpp>
 
 namespace comcept::trait
 {

@@ -1,5 +1,5 @@
 #include <comcept/comcept.hpp>
-#include <comcept/concepts.hpp>
+#include <comcept/trait/concepts.hpp>
 
 #include <doctest/doctest.h>
 

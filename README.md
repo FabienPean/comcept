@@ -9,7 +9,7 @@ No this is not a typo :smile: it is the contraction of _Composable Concepts_. Af
 
 ```cpp
 #include <comcept/comcept.hpp>
-#include <comcept/concepts.hpp>
+#include <comcept/trait/concepts.hpp>
 
 namespace ccpt = ::comcept;
 namespace  trt = ::comcept::trait;
@@ -39,7 +39,9 @@ int main()
 {
     foo(std::array{1UL,2UL,3UL});   // calls A
     foo(std::array{1.,2.,3.});      // calls B
-    foo(std::array{std::array{11UL,12UL,13UL},std::array{14UL,15UL,16UL}}); // calls C
+    foo(std::array{std::array{11UL,12UL,13UL},
+                   std::array{14UL,15UL,16UL}}
+    ); // calls C
     return 0;
 }
 ```
