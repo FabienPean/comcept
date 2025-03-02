@@ -2,6 +2,7 @@
 #pragma once
 
 #include <ranges>
+#include <version>
 
 #include <comcept/detail/macros.hpp>
 
@@ -22,5 +23,7 @@ namespace comcept::trait
     COMCEPT_TRAITIFY_1(contiguous_range);
     COMCEPT_TRAITIFY_1(common_range);
     COMCEPT_TRAITIFY_1(viewable_range);
+#ifdef __cpp_lib_ranges_as_const
     COMCEPT_TRAITIFY_1(constant_range);
+#endif
 }
