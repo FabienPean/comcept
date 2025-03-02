@@ -7,6 +7,7 @@
 
 namespace comcept::trait
 {
+    // https://en.cppreference.com/w/cpp/ranges#Range_concepts
     COMCEPT_TRAITIFY_1(range);
     COMCEPT_TRAITIFY_1(borrowed_range);
     COMCEPT_TRAITIFY_1(sized_range);
