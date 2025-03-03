@@ -8,8 +8,8 @@
 namespace comcept
 {
     /// Defines the core requirement that a type must fulfill to be used as argument in a composable concept
-    /// Note that it is not possible to verify the existence of a template,
-    /// hence the need for a specific type _Type_ template argument.
+    /// It is not possible to verify the validity of a template variable for all possible instances (infinite possibilities),
+    /// hence the need to query for a specific type _Type_ template argument.
     template<typename Type, typename Trait>
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
@@ -23,7 +23,7 @@ namespace comcept
 
     /// Composable concept to constrain the end result of a call to `std::decay_t`
     template<typename T, typename Type_or_Trait>
-    concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> ||  satisfy<std::decay_t<T>,Type_or_Trait>;
+    concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> || satisfy<std::decay_t<T>,Type_or_Trait>;
 }
 
 namespace comcept::trait
