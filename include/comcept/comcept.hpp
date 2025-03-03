@@ -13,14 +13,6 @@ namespace comcept
     template<typename Trait, typename Type>
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
-    /// Helper struct to enable composing the standard library type traits with this library
-    template<template<typename...>typename TypeTrait, typename... Args>
-    struct compose
-    {
-        template<typename T>
-        static constexpr bool value = TypeTrait<T,Args...>::value;
-    };
-
     /// Verify that a type fulfills a constraint expressed via a composable trait, as defined by this library
     template<typename Type, typename Trait>
     concept satisfy = composable<Trait,Type> && (Trait::template value<Type> == true);
@@ -36,6 +28,14 @@ namespace comcept
 
 namespace comcept::trait
 {
+    /// Helper struct to enable composing the standard library type traits with this library
+    template<template<typename...>typename TypeTrait, typename... Args>
+    struct compose
+    {
+        template<typename T>
+        static constexpr bool value = TypeTrait<T,Args...>::value;
+    };
+
     /// Traitify the composable concept `range_of` to be reusable as an argument in a composable concept
     template<typename Type_or_Trait, template<class...> class E = std::ranges::range_value_t>
     struct range_of
