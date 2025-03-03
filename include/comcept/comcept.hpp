@@ -10,12 +10,12 @@ namespace comcept
     /// Defines the core requirement that a type must fulfill to be used as argument in a composable concept
     /// Note that it is not possible to verify the existence of a template,
     /// hence the need for a specific type _Type_ template argument.
-    template<typename Trait, typename Type>
+    template<typename Type, typename Trait>
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
     /// Verify that a type fulfills a constraint expressed via a composable trait, as defined by this library
     template<typename Type, typename Trait>
-    concept satisfy = composable<Trait,Type> && (Trait::template value<Type> == true);
+    concept satisfy = composable<Type,Trait> && (Trait::template value<Type> == true);
 
     /// Composable concept to constrain on the content of a range
     template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
