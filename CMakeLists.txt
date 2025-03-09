@@ -3,10 +3,12 @@ cmake_minimum_required(VERSION 3.22)
 project(
     comcept
     DESCRIPTION "C++20 and beyond composable concepts"
-    VERSION 0.0.1
+    VERSION 1.0.0
     LANGUAGES CXX 
 )
-set(CMAKE_CXX_EXTENSIONS OFF)
+if(PROJECT_IS_TOP_LEVEL)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 
 add_library(comcept INTERFACE)
 add_library(comcept::comcept ALIAS comcept)
@@ -39,6 +41,7 @@ write_basic_package_version_file(
     ${PROJECT_NAME}ConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY SameMajorVersion
+    ARCH_INDEPENDENT
 )
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
