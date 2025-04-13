@@ -8,6 +8,8 @@ target_sources(comcept_tests
         range_of.cpp 
         decays_to.cpp
         compose.cpp
+        map_of.cpp
+        set_of.cpp
 )
 
 include(FetchContent)

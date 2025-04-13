@@ -24,6 +24,14 @@ namespace comcept
     /// Composable concept to constrain the end result of a call to `std::decay_t`
     template<typename T, typename Type_or_Trait>
     concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> || satisfy<std::decay_t<T>,Type_or_Trait>;
+
+    /// Composable concept to constrain the content of associative containers
+    template<typename T, typename Key, typename Val>
+    concept map_of = (std::same_as<Key,typename T::key_type>    || satisfy<typename T::key_type   ,Key>) 
+                 &&  (std::same_as<Val,typename T::mapped_type> || satisfy<typename T::mapped_type,Val>);
+    template<typename T, typename Key>
+    concept set_of = (std::same_as<Key,typename T::key_type>    || satisfy<typename T::key_type   ,Key>) 
+                 &&  (std::same_as<Key,typename T::value_type>  || satisfy<typename T::value_type ,Key>);
 }
 
 namespace comcept::trait
@@ -50,5 +58,21 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = comcept::decays_to<T, Type_or_Trait>;
+    };
+
+    /// Traitify the composable concept `map_of` to be reusable as an argument in a composable concept
+    template<typename Key, typename Value>
+    struct map_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::map_of<T, Key, Value>; 
+    };
+
+    /// Traitify the composable concept `set_of` to be reusable as an argument in a composable concept
+    template<typename Key>
+    struct set_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::set_of<T, Key>; 
     };
 }
