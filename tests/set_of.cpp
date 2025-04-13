@@ -23,3 +23,10 @@ static_assert(not comcept::set_of<std::set<double>,trt::integral>);
 static_assert(    comcept::set_of<std::set<int>,int>);
 static_assert(    comcept::set_of<std::set<int>,trt::integral>);
 static_assert(not comcept::set_of<std::set<int>,trt::floating_point>);
+
+static_assert(    trt::set_of<double>::value<std::set<double>>);
+static_assert(    trt::set_of<trt::floating_point>::value<std::set<double>>);
+static_assert(not trt::set_of<trt::integral>::value<std::set<double>>);
+static_assert(    trt::set_of<int>::value<std::set<int>>);
+static_assert(    trt::set_of<trt::integral>::value<std::set<int>>);
+static_assert(not trt::set_of<trt::floating_point>::value<std::set<int>>);
