@@ -14,24 +14,22 @@ namespace comcept
     concept composable = std::same_as<decltype(Trait::template value<Type>), const bool>;
 
     /// Verify that a type fulfills a constraint expressed via a composable trait, as defined by this library
-    template<typename Type, typename Trait>
-    concept satisfy = composable<Type,Trait> && (Trait::template value<Type> == true);
+    template<typename Type, typename Type_or_Trait>
+    concept satisfy = std::same_as<Type,Type_or_Trait> || (composable<Type,Type_or_Trait> && Type_or_Trait::template value<Type>);
 
     /// Composable concept to constrain on the content of a range
     template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
-    concept range_of = std::ranges::range<Range> && (std::same_as<Type_or_Trait,Element<Range>> || satisfy<Element<Range>,Type_or_Trait>);
+    concept range_of = std::ranges::range<Range> && satisfy<Element<Range>,Type_or_Trait>;
 
     /// Composable concept to constrain the end result of a call to `std::decay_t`
     template<typename T, typename Type_or_Trait>
-    concept decays_to = std::same_as<Type_or_Trait,std::decay_t<T>> || satisfy<std::decay_t<T>,Type_or_Trait>;
+    concept decays_to = satisfy<std::decay_t<T>,Type_or_Trait>;
 
     /// Composable concept to constrain the content of associative containers
     template<typename T, typename Key, typename Val>
-    concept map_of = (std::same_as<Key,typename T::key_type>    || satisfy<typename T::key_type   ,Key>) 
-                 &&  (std::same_as<Val,typename T::mapped_type> || satisfy<typename T::mapped_type,Val>);
+    concept map_of = satisfy<typename T::key_type,Key> && satisfy<typename T::mapped_type,Val>;
     template<typename T, typename Key>
-    concept set_of = (std::same_as<Key,typename T::key_type>    || satisfy<typename T::key_type   ,Key>) 
-                 &&  (std::same_as<Key,typename T::value_type>  || satisfy<typename T::value_type ,Key>);
+    concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;                
 }
 
 namespace comcept::trait
