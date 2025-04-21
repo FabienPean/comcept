@@ -30,6 +30,14 @@ namespace comcept
     concept map_of = satisfy<typename T::key_type,Key> && satisfy<typename T::mapped_type,Val>;
     template<typename T, typename Key>
     concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;                
+
+    /// Composable concept to constrain the possibilities of `std::variant`
+    template <typename T, typename... Types>
+    concept variant_of = 
+    ([]<std::size_t... I, typename U>(std::index_sequence<I...>, std::type_identity<U>) 
+    { 
+        return (satisfy<std::variant_alternative_t<I,T>,U> || ...);
+    } (std::make_index_sequence<std::variant_size_v<T>>{}, std::type_identity<Types>{}) && ... );
 }
 
 namespace comcept::trait

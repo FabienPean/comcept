@@ -10,6 +10,7 @@ target_sources(comcept_tests
         compose.cpp
         map_of.cpp
         set_of.cpp
+        variant_of.cpp
 )
 
 include(FetchContent)
