@@ -81,4 +81,12 @@ namespace comcept::trait
         template<typename T>
         static constexpr bool value = comcept::set_of<T, Key>; 
     };
+
+    /// Traitify the composable concept `variant_of` to be reusable as an argument in a composable concept
+    template<typename... Types>
+    struct variant_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::variant_of<T, Types...>;
+    };
 }
