@@ -38,6 +38,14 @@ namespace comcept
     { 
         return (satisfy<std::variant_alternative_t<I,T>,U> || ...);
     } (std::make_index_sequence<std::variant_size_v<T>>{}, std::type_identity<Types>{}) && ... );
+
+    /// Composable concept match qualified types and forward underlying type to the constraint
+    template <typename T, typename Type_or_Trait>
+    concept cvref_of = !std::same_as<T,std::remove_cvref_t<T>> && satisfy<std::remove_cvref_t<T>,Type_or_Trait>;
+    
+    template <typename T, typename Type_or_Trait>
+    concept unqualified = std::same_as<T,std::remove_cvref_t<T>> && satisfy<T,Type_or_Trait>;
+
 }
 
 namespace comcept::trait
@@ -88,5 +96,21 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = comcept::variant_of<T, Types...>;
+    };
+
+    /// Traitify the composable concept `cvref` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct cvref
+    {
+        template<typename T>
+        static constexpr bool value = comcept::cvref_of<T, Type_or_Trait>;
+    };
+    
+    /// Traitify the composable concept `unqualified` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct unqualified
+    {
+        template<typename T>
+        static constexpr bool value = comcept::unqualified<T, Type_or_Trait>;
     };
 }
