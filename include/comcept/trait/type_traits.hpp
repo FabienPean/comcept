@@ -2,6 +2,7 @@
 #pragma once
 
 #include <type_traits>
+#include <version>
 
 #include <comcept/comcept.hpp>
 
@@ -147,7 +148,9 @@ using is_aggregate = compose<std::is_aggregate>;
 #endif
 
 #if __cplusplus >= 202300L
+#ifdef __cpp_lib_is_implicit_lifetime
 using is_implicit_lifetime = compose<std::is_implicit_lifetime>;
+#endif
 #endif
 
 #if __cplusplus >= 201103L
@@ -330,8 +333,10 @@ using is_nothrow_convertible = compose<std::is_nothrow_convertible, Arg>;
 #endif
 
 #if __cplusplus >= 202002L
+#ifdef __cpp_lib_is_layout_compatible
 template<typename Arg>
 using is_layout_compatible = compose<std::is_layout_compatible, Arg>;
+#endif
 #endif
 
 #if __cplusplus >= 202002L
