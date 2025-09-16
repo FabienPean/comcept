@@ -28,27 +28,27 @@ static_assert(    cpt::cvref_of<volatile Dummy&, trt::same_as<Dummy>>);
 static_assert(    cpt::cvref_of<const volatile Dummy&&, trt::same_as<Dummy>>);
 
 // trait satisfaction
-static_assert(    trt::cvref<Dummy>::value<const Dummy&>);
-static_assert(    trt::cvref<Dummy>::value<volatile Dummy&&>);
-static_assert(    trt::cvref<Dummy>::value<const volatile Dummy&>);
-static_assert(    trt::cvref<Dummy>::value<const Dummy&&>);
-static_assert(    trt::cvref<Dummy>::value<volatile Dummy&>);
-static_assert(    trt::cvref<Dummy>::value<const volatile Dummy&&>);
+static_assert(    trt::cvref_of<Dummy>::value<const Dummy&>);
+static_assert(    trt::cvref_of<Dummy>::value<volatile Dummy&&>);
+static_assert(    trt::cvref_of<Dummy>::value<const volatile Dummy&>);
+static_assert(    trt::cvref_of<Dummy>::value<const Dummy&&>);
+static_assert(    trt::cvref_of<Dummy>::value<volatile Dummy&>);
+static_assert(    trt::cvref_of<Dummy>::value<const volatile Dummy&&>);
 
 // trait composition
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<const Dummy&>);
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<volatile Dummy&&>);
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<const volatile Dummy&>);
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<const Dummy&&>);
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<volatile Dummy&>);
-static_assert(    trt::cvref<trt::same_as<Dummy>>::value<const volatile Dummy&&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<const Dummy&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<volatile Dummy&&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<const volatile Dummy&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<const Dummy&&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<volatile Dummy&>);
+static_assert(    trt::cvref_of<trt::same_as<Dummy>>::value<const volatile Dummy&&>);
 
 // negative cases
 static_assert(not cpt::cvref_of<Dummy, Dummy>);
 static_assert(not cpt::cvref_of<int&, Dummy>);
 static_assert(not cpt::cvref_of<float&&, Dummy>);
-static_assert(not trt::cvref<Dummy>::value<int&>);
-static_assert(not trt::cvref<Dummy>::value<float&&>);
+static_assert(not trt::cvref_of<Dummy>::value<int&>);
+static_assert(not trt::cvref_of<Dummy>::value<float&&>);
 
 // unqualified concept satisfaction
 static_assert(    cpt::unqualified<Dummy, Dummy>);

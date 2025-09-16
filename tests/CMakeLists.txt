@@ -11,6 +11,10 @@ target_sources(comcept_tests
         map_of.cpp
         set_of.cpp
         variant_of.cpp
+        cvref.cpp
+        all_of.cpp
+        any_of.cpp
+        not_a.cpp
 )
 
 include(FetchContent)
