@@ -21,6 +21,10 @@ target_include_directories(
 target_compile_features(comcept INTERFACE cxx_std_20)
 install(DIRECTORY "include/${PROJECT_NAME}" DESTINATION "include/${PROJECT_NAME}")
 
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    target_compile_options(comcept INTERFACE "-Zc:__cplusplus" "-permissive-")
+endif()
+
 #########################################################################################
 ### Packaging
 #########################################################################################

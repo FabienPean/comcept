@@ -4,6 +4,8 @@
 #include <concepts>
 #include <ranges>
 #include <type_traits>
+#include <utility>
+#include <variant>
 
 namespace comcept
 {
@@ -17,6 +19,20 @@ namespace comcept
     template<typename Type, typename Type_or_Trait>
     concept satisfy = std::same_as<Type,Type_or_Trait> || (composable<Type,Type_or_Trait> && Type_or_Trait::template value<Type>);
 
+    /// Composable concept to verify that a type fulfills all given type or constraints
+    template<typename T, typename... Traits>
+    concept all_of = (satisfy<T,Traits> && ...);
+
+    /// Composable concept to verify that a type fulfills any given type or constraints
+    template<typename T,typename... Traits>
+    concept any_of = (satisfy<T,Traits> || ...); 
+
+    /// Composable concept to verify that a type fulfills all given type or constraints
+    template<typename T, typename Trait>
+    concept not_a = composable<T,Trait> && (Trait::template value<T> == false);
+    template<typename T, typename... Traits>
+    concept none_of = (not_a<T, Traits> && ...);
+    
     /// Composable concept to constrain on the content of a range
     template<class Range, class Type_or_Trait, template<class...>class Element = std::ranges::range_value_t>
     concept range_of = std::ranges::range<Range> && satisfy<Element<Range>,Type_or_Trait>;
@@ -30,6 +46,22 @@ namespace comcept
     concept map_of = satisfy<typename T::key_type,Key> && satisfy<typename T::mapped_type,Val>;
     template<typename T, typename Key>
     concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;                
+
+    /// Composable concept to constrain the possibilities of `std::variant`
+    template <typename T, typename... Types>
+    concept variant_of = 
+    ([]<std::size_t... I, typename U>(std::index_sequence<I...>, std::type_identity<U>) 
+    { 
+        return (satisfy<std::variant_alternative_t<I,T>,U> || ...);
+    } (std::make_index_sequence<std::variant_size_v<T>>{}, std::type_identity<Types>{}) && ... );
+
+    /// Composable concept match qualified types and forward underlying type to the constraint
+    template <typename T, typename Type_or_Trait>
+    concept cvref_of = !std::same_as<T,std::remove_cvref_t<T>> && satisfy<std::remove_cvref_t<T>,Type_or_Trait>;
+    
+    template <typename T, typename Type_or_Trait>
+    concept unqualified = std::same_as<T,std::remove_cvref_t<T>> && satisfy<T,Type_or_Trait>;
+
 }
 
 namespace comcept::trait
@@ -40,6 +72,36 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = TypeTrait<T,Args...>::value;
+    };
+
+    /// Verify that a type fulfills all constraints expressed via composable traits
+    template<typename... Traits>
+    struct all_of 
+    {
+        template<typename T>
+        static constexpr bool value = (comcept::satisfy<T,Traits> && ...);
+    };
+
+    /// Verify that a type fulfills any constraints expressed via composable traits
+    template<typename... Traits>
+    struct any_of 
+    {
+        template<typename T>
+        static constexpr bool value = (comcept::satisfy<T,Traits> || ...);
+    };
+
+    /// Verify that a type does _not_ fulfill a constraint expressed via composable traits
+    template<typename Trait>
+    struct not_a 
+    {
+        template<typename T>
+        static constexpr bool value = comcept::composable<T,Trait> && (Trait::template value<T> == false);
+    };
+    template<typename... Traits>
+    struct none_of 
+    {
+        template<typename T>
+        static constexpr bool value = (not_a<Traits>::template value<T> && ...);
     };
 
     /// Traitify the composable concept `range_of` to be reusable as an argument in a composable concept
@@ -72,5 +134,29 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = comcept::set_of<T, Key>; 
+    };
+
+    /// Traitify the composable concept `variant_of` to be reusable as an argument in a composable concept
+    template<typename... Types>
+    struct variant_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::variant_of<T, Types...>;
+    };
+
+    /// Traitify the composable concept `cvref_of` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct cvref_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::cvref_of<T, Type_or_Trait>;
+    };
+    
+    /// Traitify the composable concept `unqualified` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct unqualified
+    {
+        template<typename T>
+        static constexpr bool value = comcept::unqualified<T, Type_or_Trait>;
     };
 }
