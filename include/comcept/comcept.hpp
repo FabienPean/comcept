@@ -60,6 +60,9 @@ namespace comcept
     concept cvref_of = !std::same_as<T,std::remove_cvref_t<T>> && satisfy<std::remove_cvref_t<T>,Type_or_Trait>;
     
     template <typename T, typename Type_or_Trait>
+    concept qualified = cvref_of<T,Type_or_Trait>;
+    
+    template <typename T, typename Type_or_Trait>
     concept unqualified = std::same_as<T,std::remove_cvref_t<T>> && satisfy<T,Type_or_Trait>;
 
 }
@@ -151,6 +154,8 @@ namespace comcept::trait
         template<typename T>
         static constexpr bool value = comcept::cvref_of<T, Type_or_Trait>;
     };
+    template<typename Type_or_Trait>
+    using qualified = cvref_of<Type_or_Trait>;
     
     /// Traitify the composable concept `unqualified` to be reusable as an argument in a composable concept
     template<typename Type_or_Trait>
