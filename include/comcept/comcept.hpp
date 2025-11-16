@@ -111,6 +111,15 @@ namespace comcept
         }
         (std::make_index_sequence<sizeof...(Type_or_Trait)>{});
 
+        /// Concept checking that a type looks like a std::optional
+        template <typename T>
+        concept optional_like = requires(T &t) {
+            { t.has_value() } -> std::same_as<bool>;
+            { t.value() } -> std::common_reference_with<typename T::value_type>;
+        };
+        /// Composable concept to constrain the content of an optional like type
+        template <typename T, typename Type_or_Trait>
+        concept optional_of = optional_like<T> && satisfy<typename T::value_type, Type_or_Trait>;
 }
 
 namespace comcept::trait
@@ -217,5 +226,13 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = comcept::tuple_of<T, Type_or_Trait...>;
+    };
+
+    /// Traitify the composable concept `optional_of` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct optional_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::optional_of<T, Type_or_Trait>;
     };
 }
