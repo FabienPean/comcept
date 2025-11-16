@@ -45,7 +45,7 @@ namespace comcept
     template<typename T, typename Key, typename Val>
     concept map_of = satisfy<typename T::key_type,Key> && satisfy<typename T::mapped_type,Val>;
     template<typename T, typename Key>
-    concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;                
+    concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;
 
     /// Composable concept to constrain the possibilities of `std::variant`
     template <typename T, typename... Types>
@@ -58,10 +58,10 @@ namespace comcept
     /// Composable concept match qualified types and forward underlying type to the constraint
     template <typename T, typename Type_or_Trait>
     concept cvref_of = !std::same_as<T,std::remove_cvref_t<T>> && satisfy<std::remove_cvref_t<T>,Type_or_Trait>;
-    
+
     template <typename T, typename Type_or_Trait>
     concept qualified = cvref_of<T,Type_or_Trait>;
-    
+
     template <typename T, typename Type_or_Trait>
     concept unqualified = std::same_as<T,std::remove_cvref_t<T>> && satisfy<T,Type_or_Trait>;
 
