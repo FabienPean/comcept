@@ -45,7 +45,7 @@ namespace comcept
     template<typename T, typename Key, typename Val>
     concept map_of = satisfy<typename T::key_type,Key> && satisfy<typename T::mapped_type,Val>;
     template<typename T, typename Key>
-    concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;                
+    concept set_of = satisfy<typename T::key_type,Key> && satisfy<typename T::value_type ,Key>;
 
     /// Composable concept to constrain the possibilities of `std::variant`
     template <typename T, typename... Types>
@@ -58,10 +58,68 @@ namespace comcept
     /// Composable concept match qualified types and forward underlying type to the constraint
     template <typename T, typename Type_or_Trait>
     concept cvref_of = !std::same_as<T,std::remove_cvref_t<T>> && satisfy<std::remove_cvref_t<T>,Type_or_Trait>;
-    
+
+    template <typename T, typename Type_or_Trait>
+    concept qualified = cvref_of<T,Type_or_Trait>;
+
     template <typename T, typename Type_or_Trait>
     concept unqualified = std::same_as<T,std::remove_cvref_t<T>> && satisfy<T,Type_or_Trait>;
 
+    /// Concept checking that a type implements the _tuple protocol_
+    template <typename T>
+    concept tuple_like =
+        requires
+        {
+            typename std::tuple_size<std::remove_cvref_t<T>>::type;
+            requires std::same_as<decltype(std::tuple_size_v<std::remove_cvref_t<T>>), const std::size_t>;
+        } 
+        and 
+        []<std::size_t... I>(std::index_sequence<I...>) 
+        { 
+            constexpr auto has_tuple_element = 
+            []<std::size_t N>(){ return requires(T t) {
+                typename std::tuple_element_t<N, std::remove_cvref_t<T>>;
+                { get<N>(t) } -> decays_to<std::tuple_element_t<N, std::remove_cvref_t<T>>>;
+            }; };
+            return ( has_tuple_element.template operator()<I>() && ...);
+        } (std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>{});
+
+    template <typename T>
+    concept pair_like = tuple_like<T> && std::tuple_size_v<T> == 2;
+
+    /// Composable concept to constrain the content of a tuple like type
+    template<typename T, typename... Type_or_Trait>
+    concept tuple_of =
+        comcept::tuple_like<T>
+        and
+        std::tuple_size_v<T> == sizeof...(Type_or_Trait) 
+        and 
+        // IIFE to input index sequence to process each element of the tuple
+        []<std::size_t... I>(std::index_sequence<I...>) 
+        {
+            constexpr auto check_constraint = []<typename ToC, typename E>(std::type_identity<ToC>, std::type_identity<E>)
+            {
+                if constexpr (std::same_as<ToC, E>)
+                    return true;
+                if constexpr (requires { ToC::template value<E>; })
+                    return ToC::template value<E>;
+                else
+                    return false;
+            };
+            // Element-wise check on input tuple
+            return (check_constraint(std::type_identity<Type_or_Trait>{}, std::type_identity<std::tuple_element_t<I, T>>{}) && ...);
+        }
+        (std::make_index_sequence<sizeof...(Type_or_Trait)>{});
+
+        /// Concept checking that a type looks like a std::optional
+        template <typename T>
+        concept optional_like = requires(T &t) {
+            { t.has_value() } -> std::same_as<bool>;
+            { t.value() } -> std::common_reference_with<typename T::value_type>;
+        };
+        /// Composable concept to constrain the content of an optional like type
+        template <typename T, typename Type_or_Trait>
+        concept optional_of = optional_like<T> && satisfy<typename T::value_type, Type_or_Trait>;
 }
 
 namespace comcept::trait
@@ -151,6 +209,8 @@ namespace comcept::trait
         template<typename T>
         static constexpr bool value = comcept::cvref_of<T, Type_or_Trait>;
     };
+    template<typename Type_or_Trait>
+    using qualified = cvref_of<Type_or_Trait>;
     
     /// Traitify the composable concept `unqualified` to be reusable as an argument in a composable concept
     template<typename Type_or_Trait>
@@ -158,5 +218,21 @@ namespace comcept::trait
     {
         template<typename T>
         static constexpr bool value = comcept::unqualified<T, Type_or_Trait>;
+    };
+
+    /// Traitify the composable concept `tuple_of` to be reusable as an argument in a composable concept
+    template<typename... Type_or_Trait>
+    struct tuple_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::tuple_of<T, Type_or_Trait...>;
+    };
+
+    /// Traitify the composable concept `optional_of` to be reusable as an argument in a composable concept
+    template<typename Type_or_Trait>
+    struct optional_of
+    {
+        template<typename T>
+        static constexpr bool value = comcept::optional_of<T, Type_or_Trait>;
     };
 }

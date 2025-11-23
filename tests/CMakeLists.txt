@@ -10,11 +10,13 @@ target_sources(comcept_tests
         compose.cpp
         map_of.cpp
         set_of.cpp
+        tuple_of.cpp
         variant_of.cpp
-        cvref.cpp
+        cvref_of.cpp
         all_of.cpp
         any_of.cpp
         not_a.cpp
+        optional_of.cpp
 )
 
 include(FetchContent)
@@ -22,7 +24,9 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/onqtam/doctest GIT_TAG v2.4.11)
 FetchContent_MakeAvailable(doctest)
 target_link_libraries(comcept_tests PRIVATE doctest::doctest)
-# target_compile_options(comcept_tests PRIVATE -fconcepts-diagnostics-depth=5)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(comcept_tests PRIVATE -fconcepts-diagnostics-depth=5)
+endif()
 
 enable_testing()
 include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)

@@ -53,7 +53,8 @@ jobs:
       fail-fast: false
       matrix:
         std: [20]
-        cxx: [clang++-13, clang++-14, clang++-15, clang++-16, clang++-17, clang++-18, clang++-19]
+        # Compiler bug in clang-16 and clang-17 with concept tuple_of
+        cxx: [clang++-13, clang++-14, clang++-15, clang++-18, clang++-19]
 
     steps:
     - uses: actions/checkout@v4
@@ -93,7 +94,8 @@ jobs:
       matrix:
         std: [23]
         # Compiler bug in clang-10 to clang-16 with C++23
-        cxx: [clang++-17, clang++-18, clang++-19]
+        # Compiler bug in clang-16 and clang-17 with concept tuple_of
+        cxx: [clang++-18, clang++-19]
 
     steps:
     - uses: actions/checkout@v4
