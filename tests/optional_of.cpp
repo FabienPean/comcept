@@ -17,7 +17,7 @@ static_assert(    cpt::optional_of<std::optional<double>,trt::floating_point>);
 static_assert(not cpt::optional_of<std::optional<int>   ,trt::floating_point>);
 static_assert(not cpt::optional_of<std::variant<int>    ,trt::floating_point>);
 
-#if __cplusplus >= 202300L
+#ifdef __cpp_lib_expected 
 #include <expected>
 static_assert(    comcept::optional_of<std::expected<float,int>,trt::floating_point>);
 #endif
