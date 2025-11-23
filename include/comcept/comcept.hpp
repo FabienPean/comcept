@@ -97,7 +97,7 @@ namespace comcept
         // IIFE to input index sequence to process each element of the tuple
         []<std::size_t... I>(std::index_sequence<I...>) 
         {
-            constexpr auto check_constraint = []<typename ToC, typename E>()
+            constexpr auto check_constraint = []<typename ToC, typename E>(std::type_identity<ToC>, std::type_identity<E>)
             {
                 if constexpr (std::same_as<ToC, E>)
                     return true;
@@ -107,7 +107,7 @@ namespace comcept
                     return false;
             };
             // Element-wise check on input tuple
-            return ((check_constraint.template operator()<Type_or_Trait, std::tuple_element_t<I, T>>()) && ...);
+            return (check_constraint(std::type_identity<Type_or_Trait>{}, std::type_identity<std::tuple_element_t<I, T>>{}) && ...);
         }
         (std::make_index_sequence<sizeof...(Type_or_Trait)>{});
 
